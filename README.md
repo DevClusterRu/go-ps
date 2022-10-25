@@ -25,10 +25,26 @@ $ go get github.com/mitchellh/go-ps
 ...
 ```
 
-## TODO
+import (
+      ps "github.com/mitchellh/go-ps"
+      ... // other imports here...
+)
 
-Want to contribute? Here is a short TODO list of things that aren't
-implemented for this library that would be nice:
+```
+func whatever(){
+    processList, err := ps.Processes()
+    if err != nil {
+        log.Println("ps.Processes() Failed, are you using windows?")
+        return
+    }
 
-  * FreeBSD support
-  * Plan9 support
+    // map ages
+    for x := range processList {
+        var process ps.Process
+        process = processList[x]
+        log.Printf("%d\t%s\n",process.Pid(),process.Executable())
+
+        // do os.* stuff on the pid
+    }
+}
+```
