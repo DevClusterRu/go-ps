@@ -49,7 +49,7 @@ func findProcess(pid int) (Process, error) {
 	return newUnixProcess(pid)
 }
 
-func processes(args ...string) ([]Process, error) {
+func processes(grep string) ([]Process, error) {
 
 	d, err := os.Open("/proc")
 	if err != nil {
@@ -85,16 +85,7 @@ func processes(args ...string) ([]Process, error) {
 				continue
 			}
 
-			isset := false
-			if len(args) == 0 {
-				isset = true
-			}
-			for _, v := range args {
-				if strings.Contains(p.binary, v) {
-					isset = true
-				}
-			}
-			if !isset {
+			if strings.Contains(p.binary, grep) {
 				continue
 			}
 
