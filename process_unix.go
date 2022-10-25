@@ -1,3 +1,4 @@
+//go:build linux || solaris
 // +build linux solaris
 
 package ps
@@ -7,6 +8,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"strings"
 )
 
 // UnixProcess is an implementation of Process that contains Unix-specific
@@ -47,7 +49,8 @@ func findProcess(pid int) (Process, error) {
 	return newUnixProcess(pid)
 }
 
-func processes() ([]Process, error) {
+func processes(args ...string) ([]Process, error) {
+
 	d, err := os.Open("/proc")
 	if err != nil {
 		return nil, err
@@ -79,6 +82,19 @@ func processes() ([]Process, error) {
 
 			p, err := newUnixProcess(int(pid))
 			if err != nil {
+				continue
+			}
+
+			isset := false
+			if len(args) == 0 {
+				isset = true
+			}
+			for _, v := range args {
+				if strings.Contains(p.binary, v) {
+					isset = true
+				}
+			}
+			if !isset {
 				continue
 			}
 

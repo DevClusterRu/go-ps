@@ -27,8 +27,8 @@ type Process interface {
 // called. Some operating systems don't provide snapshot capability of the
 // process table, in which case the process table returned might contain
 // ephemeral entities that happened to be running when this was called.
-func Processes() ([]Process, error) {
-	return processes()
+func Processes(grep ...string) ([]Process, error) {
+	return processes(grep...)
 }
 
 // FindProcess looks up a single process by pid.
